@@ -25,6 +25,7 @@ function render()
 
     map.draw();
 
+    sprite("/assets/vignette.png", 1920 / 2, 1080 / 2, 1920, 1080);
 
     Input.update();
     requestAnimationFrame(render);

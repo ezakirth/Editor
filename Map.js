@@ -2,14 +2,14 @@ class Map
 {
     constructor(w, h)
     {
-        this.x = 1;
-        this.y = 1;
+        this.x = 0;
+        this.y = 0;
 
         this.w = w;
         this.h = h;
         this.maxW = w * 3;
         this.maxH = h * 3;
-        this.size = 1920 / w;
+        this.size = Math.floor(1920 / w);
 
         this.map = Array(this.maxW);
         for (var x = 0; x < this.maxW; x++)
@@ -39,11 +39,10 @@ class Map
         var px = 0;
         var py = 0;
 
-
         ctx.save();
         ctx.translate(this.size / 2 - fx, this.size / 2 - fy);
 
-        for (var x = ix; x < ix + this.w; x++)
+        for (var x = ix; x < ix + this.w + 1; x++)
         {
             for (var y = iy; y < iy + this.h; y++)
             {
