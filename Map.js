@@ -95,8 +95,8 @@ class Map
                     }
                     if (block.pickup)
                     {
-                        Graphics.sprite("assets/light", px, py, this.size);
-                        Graphics.sprite(block.pickup, px, py, this.size);
+                        Graphics.sprite("light", px, py, this.size, this.size);
+                        Graphics.sprite(block.pickup, px, py, this.size, this.size);
                     }
                     if (Editor.showGrid)
                     {

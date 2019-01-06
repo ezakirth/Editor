@@ -15,45 +15,21 @@ Editor.saveData = function (data, filename)
     window.URL.revokeObjectURL(url);
 };
 
-Editor.lockItem = function (lock)
+
+Editor.updateMenu = function (id)
 {
-    $("div#block_info :input").prop("disabled", lock);
-    $("div#block_info select").prop("disabled", lock);
-    $("#editor_locked_id").prop("disabled", false);
-};
-
-Editor.deleteItem = function ()
-{
-    var confirmation = confirm("Are you sure ?");
-    if (confirmation)
-    {
-        var index = Game.world.objects.indexOf(Editor.selected);
-        if (index > -1) Game.world.objects.splice(index, 1);
-        $("#block_info").empty();
-        if (Editor.selected.type == "terrain")
-            Game.world.terrain = null;
-
-        Editor.selected = null;
-
-        if (Game.world.terrain)
-        {
-            $("#block_terrain").hide();
-            $("#block_sprite").show();
-        }
-        else
-        {
-            $("#block_sprite").hide();
-            $("#block_terrain").show();
-        }
-    }
-};
-
+    var link = $("#" + id).find(":selected").data("link");
+    $(".linked").hide();
+    $("#" + link).show();
+}
 
 /**
  * Return position at mouse cursor
  */
 Editor.getpos = function ()
 {
+    if (Input.real.x < 276) return;
+
     var ix = Math.floor(Game.map.x);
     var fx = Game.map.x - ix;
     var iy = Math.floor(Game.map.y);
@@ -64,11 +40,46 @@ Editor.getpos = function ()
     let px = (x + ix).clamp(0, Game.map.w - 1);
     let py = (y + iy).clamp(0, Game.map.h - 1);
 
-    if ($("#editor_Brush_type_id").val() == "PAINT")
-        this.paint(px, py);
-    else
-        this.clear(px, py);
+    let selected = $("#editor_Brush_type_id").val();
 
+    if (selected == "Smart Paint") this.paint(px, py);
+    if (selected == "Smart Clear") this.clear(px, py);
+    if (selected == "Add Spawn") this.addItem("spawn_" + $("#editor_Spawn_team_id").val(), px, py);
+    if (selected == "Add Weapons") this.addItem($("#editor_Weapon_id").val(), px, py);
+    if (selected == "Add Pickups") this.addItem($("#editor_Pickup_id").val(), px, py);
+    if (selected == "Add Portals") this.addItem($("#editor_Portal_id").val(), px, py);
+    if (selected == "Add Flag (CTF)") this.addItem("flag_" + $("#editor_Flag_team_id").val(), px, py);
+    if (selected == "Delete Items") this.clearItem(px, py);
+
+}
+
+Editor.addItem = function (type, px, py)
+{
+    var tile = Game.map.data[px][py];
+    if (tile.solid) return;
+
+    if (type.startsWith('flag'))
+    {
+        tile.tex = 'flag_floor';
+    }
+
+    tile.pickup = "pickup_" + type;
+    console.log(tile.pickup);
+    Input.mouse.left = false;
+}
+
+Editor.clearItem = function (px, py)
+{
+    var tile = Game.map.data[px][py];
+
+    if (tile.pickup && tile.pickup.startsWith('pickup_flag'))
+    {
+        tile.tex = 'floor_1';
+    }
+
+    tile.pickup = null;
+
+    Input.mouse.left = false;
 }
 
 /**
@@ -83,6 +94,7 @@ Editor.randomFloor = function ()
             var tile = Game.map.data[x][y];
             if (tile.tex && tile.tex.startsWith('floor'))
             {
+                if (tile.pickup && tile.pickup.startsWith('pickup_flag')) continue;
                 tile.tex = 'floor_1';
                 if (Math.random() > .8) tile.tex = 'floor_' + Math.floor(Math.random() * 12 + 1);
             }
@@ -184,8 +196,6 @@ Editor.resetMap = function ()
 
 Editor.paint = function (px, py, norecursive)
 {
-    if (Input.real.x < 276) return;
-
     var tile = Game.map.data[px][py];
     tile.solid = false;
 
@@ -264,8 +274,6 @@ Editor.paint = function (px, py, norecursive)
 
 Editor.clear = function (px, py, norecursive)
 {
-    if (Input.real.x < 276) return;
-
     Game.map.data[px][py] = new Tile();
 
     var pTL = { x: (px - 1).clamp(0, Game.map.w - 1), y: (py - 1).clamp(0, Game.map.h - 1) };

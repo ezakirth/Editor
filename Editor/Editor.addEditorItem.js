@@ -22,28 +22,19 @@ Editor.addEditorItem = function (items)
             else
                 $("#" + item.block_id).append(div);
 
+            if (item.linked)
+            {
+                $(div).addClass("linked");
+                $(div).hide();
+            }
+
             break;
         }
 
         if (item.label)
             item.id = "editor_" + item.label.split(' ').join('_') + "_id";
 
-        if (item.block_id == "block_info" && item.type != "button")
-        {
-            item.value = Editor.selected[item.label];
-            if (item.type == "color")
-                item.onchange = "Editor.selected." + item.label + " = this.value;";
-            else
-                item.onkeyup = "Editor.selected." + item.label + " = this.value;";
-            if (item.type == "checkbox") item.onchange = "Editor.selected." + item.label + " = this.checked;";
-            if (item.label == "locked") item.onchange += "Editor.foundLocked = null;if (this.checked){Editor.foundLocked = Editor.selected;} Editor.lockItem(this.checked);";
-            if (item.label == "mirrorX" || item.label == "wrapX" || item.label == "wrapY") item.onchange += "Editor.selected.updateBufferTexcoord();";
-            if (item.label == "r") item.onchange = "Editor.selected." + item.label + " = this.value*Math.PI/180;";
-        }
-
         var input;
-
-
 
         if (item.label)
         {
@@ -64,10 +55,16 @@ Editor.addEditorItem = function (items)
             for (var i = 0; i < item.list.length; i++)
             {
                 var opt = document.createElement("option");
-                var option = item.list[i];
+                var option = option = item.list[i].text;
                 opt.value = option;
                 opt.text = option;
                 opt.selected = (opt.value == item.value);
+                if (item.linkedList)
+                {
+                    var link = item.list[i].link;
+                    opt.setAttribute("data-link", link);
+                    input.setAttribute("onchange", "Editor.updateMenu('" + item.id + "')");
+                }
                 input.appendChild(opt);
                 input.id = item.id;
             }

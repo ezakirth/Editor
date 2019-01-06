@@ -12,21 +12,55 @@ Editor.init = function ()
 
     Editor.addEditorItem([{ block: "General", block_id: "block_general" }]);
     Editor.addEditorItem([{ block_id: "block_general", type: "checkbox", label: "Show grid", onchange: "Editor.showGrid = this.checked;", checked: Editor.showGrid }]);
-    Editor.addEditorItem([{ block_id: "block_general", type: "select", label: "Brush type", list: ["PAINT", "CLEAR", "Add Weapons", "Add Pickups", "Add Portals", "Add Flag (CTF)", "Clear items"] }]);
-    Editor.addEditorItem([{ block_id: "block_general", type: "button", value: "Randomize floor", onclick: "Editor.randomFloor()" }]);
+    Editor.addEditorItem([{
+        block_id: "block_general", type: "select", label: "Brush type", linkedList: true, list: [
+            { text: "Smart Paint", link: 'block_paint' },
+            { text: "Smart Clear", link: 'block_paint' },
+            { text: "Add Spawn", link: 'block_spawn' },
+            { text: "Add Weapons", link: 'block_weapons' },
+            { text: "Add Pickups", link: 'block_pickups' },
+            { text: "Add Portals", link: 'block_portals' },
+            { text: "Add Flag (CTF)", link: 'block_flags' },
+            { text: "Delete Items" }
+        ]
+    }]);
+    Editor.addEditorItem([{ block: "Paint", block_id: "block_paint", linked: true }]);
+    Editor.addEditorItem([{ block_id: "block_paint", type: "button", value: "Randomize floor", onclick: "Editor.randomFloor()" }]);
 
-    Editor.addEditorItem([{ block: "Weapons", block_id: "block_weapons" }]);
-    Editor.addEditorItem([{ block_id: "block_weapons", type: "select", label: "Type", list: ["Shotgun", "Blaster", "Sniper"] }]);
+    Editor.addEditorItem([{ block: "Weapons", block_id: "block_weapons", linked: true }]);
+    Editor.addEditorItem([{
+        block_id: "block_weapons", type: "select", label: "Weapon", list: [
+            { text: "minigun" }, { text: "blastgun" }, { text: "shotgun" }, { text: "railgun" }, { text: "rpg" }
+        ]
+    }]);
 
-    Editor.addEditorItem([{ block: "Pickups", block_id: "block_pickups" }]);
-    Editor.addEditorItem([{ block_id: "block_pickups", type: "select", label: "Type", list: ["Medkit", "Armor", "Speed"] }]);
+    Editor.addEditorItem([{ block: "Pickups", block_id: "block_pickups", linked: true }]);
+    Editor.addEditorItem([{
+        block_id: "block_pickups", type: "select", label: "Pickup", list: [
+            { text: "medkit" }, { text: "shield" }, { text: "speed" },
+        ]
+    }]);
 
-    Editor.addEditorItem([{ block: "Portals", block_id: "block_portals" }]);
-    Editor.addEditorItem([{ block_id: "block_portals", type: "select", label: "Type", list: ["Red", "Blue", "Green", "Tellow"] }]);
+    Editor.addEditorItem([{ block: "Portals", block_id: "block_portals", linked: true }]);
+    Editor.addEditorItem([{
+        block_id: "block_portals", type: "select", label: "Portal", list: [
+            { text: "Red" }, { text: "Blue" }, { text: "Green" }, { text: "Tellow" }
+        ]
+    }]);
 
-    Editor.addEditorItem([{ block: "Flags", block_id: "block_flags" }]);
-    Editor.addEditorItem([{ block_id: "block_flags", type: "select", label: "Type", list: ["Blue Flag", "Red Flag"] }]);
+    Editor.addEditorItem([{ block: "Flags", block_id: "block_flags", linked: true }]);
+    Editor.addEditorItem([{
+        block_id: "block_flags", type: "select", label: "Flag team", list: [
+            { text: "blue" }, { text: "green" }
+        ]
+    }]);
 
+    Editor.addEditorItem([{ block: "Spawn", block_id: "block_spawn", linked: true }]);
+    Editor.addEditorItem([{
+        block_id: "block_spawn", type: "select", label: "Spawn team", list: [
+            { text: "blue" }, { text: "green" }
+        ]
+    }]);
 
 
     Editor.addEditorItem([{ block: "Blood", block_id: "block_blood" }]);
@@ -67,34 +101,3 @@ Editor.init = function ()
 
 };
 
-Editor.loadObjectInfo = function (sprite)
-{
-    Editor.selected = sprite;
-
-    $("#block_info").empty();
-
-    Editor.addEditorItem([{ block: "Object Information (" + sprite.type + ")", block_id: "block_info" }]);
-
-    Editor.addEditorItem([{ block_id: "block_info", type: "button", value: "Delete sprite", onclick: "Editor.deleteItem()", disabled: sprite.locked }]);
-    Editor.addEditorItem([{ block_id: "block_info", type: "checkbox", label: "locked", checked: sprite.locked }]);
-    if (sprite.type != "terrain")
-        Editor.addEditorItem([{ block_id: "block_info", type: "checkbox", label: "mirrorX", disabled: sprite.locked }]);
-    Editor.addEditorItem([{ block_id: "block_info", type: "text", label: "x", disabled: sprite.locked }]);
-    Editor.addEditorItem([{ block_id: "block_info", type: "text", label: "y", disabled: sprite.locked }]);
-    Editor.addEditorItem([{ block_id: "block_info", type: "number", label: "z", disabled: sprite.locked }]);
-    if (sprite.type == "static")
-        Editor.addEditorItem([{ block_id: "block_info", type: "number", label: "r", disabled: sprite.locked }]);
-
-    if (sprite.type != "terrain")
-    {
-        Editor.addEditorItem([{ block_id: "block_info", type: "text", label: "w", disabled: sprite.locked }]);
-        Editor.addEditorItem([{ block_id: "block_info", type: "text", label: "h", disabled: sprite.locked }]);
-        if (sprite.type == "layer")
-            Editor.addEditorItem([{ block_id: "block_info", type: "number", label: "distance", disabled: sprite.locked }]);
-        if (Game.world.texturesInfos[sprite.texture].wrapS == gl.REPEAT)
-            Editor.addEditorItem([{ block_id: "block_info", type: "text", label: "wrapX", disabled: sprite.locked }]);
-        if (Game.world.texturesInfos[sprite.texture].wrapT == gl.REPEAT)
-            Editor.addEditorItem([{ block_id: "block_info", type: "text", label: "wrapY", disabled: sprite.locked }]);
-    }
-    Editor.addEditorItem([{ block_id: "block_info", type: "color", label: "tint", disabled: sprite.locked }]);
-};
