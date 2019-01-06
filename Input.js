@@ -13,49 +13,90 @@ var Input = {
     keyUp: false,
     keyDown: false,
     viewPos: { x: 0, y: 0 },
+    speed: 1,
+    mouse: { left: false, middle: false, right: false },
+
+    init: function ()
+    {
+        window.addEventListener('touchstart', Input.inputDown);
+        window.addEventListener('touchend', Input.inputUp);
+        window.addEventListener('touchmove', Input.inputMove);
+
+        window.addEventListener('mousedown', Input.inputDown);
+        window.addEventListener('mouseup', Input.inputUp);
+        window.addEventListener('mousemove', Input.inputMove);
+
+        window.addEventListener('keyup', Input.inputKeyUp);
+        window.addEventListener('keydown', Input.inputKeyDown);
+
+        window.addEventListener('contextmenu', Input.rightClick);
+        window.addEventListener('wheel', Input.wheelAction);
+
+    },
+
+    wheelAction: function (e)
+    {
+        Game.map.size += (e.deltaY / Math.abs(e.deltaY)) * 2;
+    },
+
+    rightClick: function (e)
+    {
+        e.preventDefault();
+        return false;
+    },
+
     update: function ()
     {
 
         if (Input.keyLeft)
         {
-            Input.inertia.x += speed;
-            Input.viewPos.x -= 5 * speed;
+            Input.inertia.x += Input.speed;
+            Input.viewPos.x -= Input.speed;
         }
         if (Input.keyRight)
         {
-            Input.inertia.x -= speed;
-            Input.viewPos.x += 5 * speed;
+            Input.inertia.x -= Input.speed;
+            Input.viewPos.x += Input.speed;
         }
 
         if (Input.keyUp)
         {
-            Input.inertia.y += speed;
-            Input.viewPos.y -= 5 * speed;
+            Input.inertia.y += Input.speed;
+            Input.viewPos.y -= Input.speed;
         }
         if (Input.keyDown)
         {
-            Input.inertia.y -= speed;
-            Input.viewPos.y += 5 * speed;
+            Input.inertia.y -= Input.speed;
+            Input.viewPos.y += Input.speed;
         }
-        Input.viewPos.y -= Input.inertia.y * speed;
-        Input.inertia.y -= (Input.inertia.y / 20) * speed;
+        Input.viewPos.y -= Input.inertia.y * Input.speed;
+        Input.inertia.y -= (Input.inertia.y / 20) * Input.speed;
 
-        Input.viewPos.x -= Input.inertia.x * speed;
-        Input.inertia.x -= (Input.inertia.x / 20) * speed;
+        Input.viewPos.x -= Input.inertia.x * Input.speed;
+        Input.inertia.x -= (Input.inertia.x / 20) * Input.speed;
 
     },
 
     inputUp: function (e)
     {
-        Input.active = false;
+        if (e.button == 0) Input.mouse.left = false;
+        if (e.button == 1) Input.mouse.middle = false;
+        if (e.button == 2) Input.mouse.right = false;
+
         Input.last.x = Input.pos.x;
         Input.last.y = Input.pos.y;
-        //        Game.selected = null;
+        if (Editor.active && e.button == 0)
+        {
+            Editor.paintShadows();
+        }
     },
 
     inputDown: function (e)
     {
-        Input.active = true;
+        Input.mouse.left = (e.button == 0);
+        Input.mouse.middle = (e.button == 1);
+        Input.mouse.right = (e.button == 2);
+
         Input.last.x = Input.pos.x;
         Input.last.y = Input.pos.y;
         Input.origin.x = Input.pos.x;
@@ -71,12 +112,13 @@ var Input = {
         Input.last.y = Input.pos.y;
         Input.getPosition(Input.pos, e);
 
-        if (Input.active)
+        if (Input.mouse.right)
         {
-            var deltaX = (Input.last.x - Input.pos.x) * speed;
-            var deltaY = (Input.last.y - Input.pos.y) * speed;
-            Input.viewPos.x += deltaX;
-            Input.viewPos.y += deltaY;
+            var deltaX = -(Input.last.x - Input.pos.x) * Input.speed;
+            var deltaY = -(Input.last.y - Input.pos.y) * Input.speed;
+
+            Input.viewPos.x -= deltaX;
+            Input.viewPos.y -= deltaY;
             Input.inertia.x = deltaX;
             Input.inertia.y = deltaY;
         }
@@ -135,18 +177,9 @@ var Input = {
             Input.real.y = event.pageY;
         }
 
-        point.x = Input.real.x;
-        point.y = Input.real.y;
+        point.x = Input.real.x * Graphics.ratio.x;
+        point.y = (Input.real.y - Graphics.offset.y) * Graphics.ratio.y;
     },
 };
 
-document.addEventListener('touchstart', Input.inputDown);
-document.addEventListener('touchend', Input.inputUp);
-document.addEventListener('touchmove', Input.inputMove);
 
-document.addEventListener('mousedown', Input.inputDown);
-document.addEventListener('mouseup', Input.inputUp);
-document.addEventListener('mousemove', Input.inputMove);
-
-document.addEventListener('keyup', Input.inputKeyUp);
-document.addEventListener('keydown', Input.inputKeyDown);

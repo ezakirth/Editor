@@ -1,9 +1,9 @@
-Editor.addEditorItem = function(items)
+Editor.addEditorItem = function (items)
 {
     var div = document.createElement("div");
     div.className = "menuItem";
 
-    for (var i=0; i<items.length; i++)
+    for (var i = 0; i < items.length; i++)
     {
         var item = items[i];
 
@@ -14,20 +14,20 @@ Editor.addEditorItem = function(items)
             lib.textContent = item.block;
             div.appendChild(lib);
 
-            if ($("#"+item.block_id).length === 0)
+            if ($("#" + item.block_id).length === 0)
             {
                 div.id = item.block_id;
                 Editor.elem.appendChild(div);
             }
             else
-                $("#"+item.block_id).append(div);
-                
+                $("#" + item.block_id).append(div);
+
             break;
         }
 
         if (item.label)
             item.id = "editor_" + item.label.split(' ').join('_') + "_id";
-        
+
         if (item.block_id == "block_info" && item.type != "button")
         {
             item.value = Editor.selected[item.label];
@@ -43,8 +43,8 @@ Editor.addEditorItem = function(items)
 
         var input;
 
-            
-        
+
+
         if (item.label)
         {
             var label = document.createElement("label");
@@ -61,7 +61,8 @@ Editor.addEditorItem = function(items)
         {
             input = document.createElement("select");
 
-            for (var i = 0; i < item.list.length; i++) {
+            for (var i = 0; i < item.list.length; i++)
+            {
                 var opt = document.createElement("option");
                 var option = item.list[i];
                 opt.value = option;
@@ -69,7 +70,7 @@ Editor.addEditorItem = function(items)
                 opt.selected = (opt.value == item.value);
                 input.appendChild(opt);
                 input.id = item.id;
-            }                
+            }
         }
         else
         {
@@ -120,22 +121,23 @@ Editor.addEditorItem = function(items)
 
 
         div.appendChild(input);
-        $("#"+item.block_id).append(div);
-    }  
+        $("#" + item.block_id).append(div);
+    }
 };
 
-Editor.loadMap = function(e)
+Editor.loadMap = function (e)
 {
     if (e.target.files[0])
     {
         var tmppath = URL.createObjectURL(e.target.files[0]);
-        $.getJSON( tmppath, function( data ) {
-            Game.world.load(data);
+        $.getJSON(tmppath, function (data)
+        {
+            Game.map.load(data);
         });
     }
 };
 
-Editor.saveMap = function(e)
+Editor.saveMap = function (e)
 {
-    Editor.saveData(Game.world, 'map.json');
+    Editor.saveData(Game.map.data, 'map.json');
 };

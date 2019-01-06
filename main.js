@@ -1,46 +1,50 @@
 "use strict";
 
-var canvas, ctx;
-var map, speed = 2;
-
-function setup()
+function init()
 {
-    canvas = document.getElementById("canvas");
-    ctx = canvas.getContext("2d");
-    ctx.imageSmoothingEnabled = false;
+    Graphics.init();
+    Input.init();
 
+    Game.init();
 
-    Editor.init();
-
-    map = new Map(20, 20);
-
-    render();
+    loop();
 }
 
-function render()
+function loop()
 {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-    sprite("/assets/bg.png", 1920 / 2, 1080 / 2, 1920, 1080);
-
-    map.draw();
-
-    sprite("/assets/vignette.png", 1920 / 2, 1080 / 2, 1920, 1080);
-
+    // logic
     Input.update();
-    requestAnimationFrame(render);
+    Game.update();
+
+    // graphics
+    Game.render();
+
+
+
+
+
+
+
+    requestAnimationFrame(loop);
 }
 
 
 
 
 
-
-
-
-
-
-
-
-
-(function () { var script = document.createElement('script'); script.onload = function () { var stats = new Stats(); document.body.appendChild(stats.dom); requestAnimationFrame(function loop() { stats.update(); requestAnimationFrame(loop) }); }; script.src = 'lib/stats.js'; document.head.appendChild(script); })()
+(function ()
+{
+    var script = document.createElement('script');
+    script.onload = function ()
+    {
+        var stats = new Stats();
+        document.body.appendChild(stats.dom);
+        requestAnimationFrame(function loop()
+        {
+            stats.update();
+            requestAnimationFrame(loop)
+        });
+    };
+    script.src = 'lib/stats.js';
+    document.head.appendChild(script);
+})()

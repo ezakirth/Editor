@@ -2,34 +2,54 @@ Editor.init = function ()
 {
     Editor.elem = document.getElementById("Editor");
 
-    Editor.addEditorItem([{ block: "General", block_id: "block_general" }]);
-    Editor.addEditorItem([{ block_id: "block_general", type: "checkbox", label: "Edit mode", onchange: "Editor.editMode = this.checked;", checked: Editor.editMode }]);
-    Editor.addEditorItem([{ block_id: "block_general", type: "checkbox", label: "Show Terrain", onchange: "Editor.showterrain = this.checked;", checked: Editor.showterrain }]);
-    Editor.addEditorItem([{ block_id: "block_general", type: "checkbox", label: "Show Props", onchange: "Editor.showprop = this.checked;", checked: Editor.showprop }]);
-    Editor.addEditorItem([{ block_id: "block_general", type: "checkbox", label: "Show Layers", onchange: "Editor.showlayer = this.checked;", checked: Editor.showlayer }]);
-    Editor.addEditorItem([{ block_id: "block_general", type: "checkbox", label: "Show Statics", onchange: "Editor.showstatic = this.checked;", checked: Editor.showstatic }]);
+    Editor.addEditorItem([{ block: "Terrain", block_id: "block_terrain" }]);
+    Editor.addEditorItem([{ block_id: "block_terrain", type: "number", label: "Width", value: 10 }]);
+    Editor.addEditorItem([{ block_id: "block_terrain", type: "number", label: "Height", value: 10 }]);
+    Editor.addEditorItem([{ block_id: "block_terrain", type: "button", value: "Create New", onclick: "Editor.resetMap()" }]);
 
-    Editor.addEditorItem([{ block: "Map", block_id: "block_map" }]);
+
+
+
+    Editor.addEditorItem([{ block: "General", block_id: "block_general" }]);
+    Editor.addEditorItem([{ block_id: "block_general", type: "checkbox", label: "Show grid", onchange: "Editor.showGrid = this.checked;", checked: Editor.showGrid }]);
+    Editor.addEditorItem([{ block_id: "block_general", type: "select", label: "Brush type", list: ["PAINT", "CLEAR", "Add Weapons", "Add Pickups", "Add Portals", "Add Flag (CTF)", "Clear items"] }]);
+    Editor.addEditorItem([{ block_id: "block_general", type: "button", value: "Randomize floor", onclick: "Editor.randomFloor()" }]);
+
+    Editor.addEditorItem([{ block: "Weapons", block_id: "block_weapons" }]);
+    Editor.addEditorItem([{ block_id: "block_weapons", type: "select", label: "Type", list: ["Shotgun", "Blaster", "Sniper"] }]);
+
+    Editor.addEditorItem([{ block: "Pickups", block_id: "block_pickups" }]);
+    Editor.addEditorItem([{ block_id: "block_pickups", type: "select", label: "Type", list: ["Medkit", "Armor", "Speed"] }]);
+
+    Editor.addEditorItem([{ block: "Portals", block_id: "block_portals" }]);
+    Editor.addEditorItem([{ block_id: "block_portals", type: "select", label: "Type", list: ["Red", "Blue", "Green", "Tellow"] }]);
+
+    Editor.addEditorItem([{ block: "Flags", block_id: "block_flags" }]);
+    Editor.addEditorItem([{ block_id: "block_flags", type: "select", label: "Type", list: ["Blue Flag", "Red Flag"] }]);
+
+
+
+    Editor.addEditorItem([{ block: "Blood", block_id: "block_blood" }]);
     Editor.addEditorItem([
-        { block_id: "block_map", type: "file", label: "Load", accept: ".json", onchangeEvent: Editor.loadMap },
-        { block_id: "block_map", type: "button", value: "Save", onclick: "Editor.saveMap()" }
+        { block_id: "block_blood", type: "button", value: "+", onclick: "Editor.addDecal('blood')" },
+        { block_id: "block_blood", type: "button", value: "-", onclick: "Editor.removeDecal('blood')" }
     ]);
 
-    Editor.addEditorItem([{ block: "Terrain", block_id: "block_terrain" }]);
-    Editor.addEditorItem([{ block_id: "block_terrain", type: "number", label: "offsetY", value: 256 }]);
-    Editor.addEditorItem([{ block_id: "block_terrain", type: "number", label: "texWidth", value: 192 }]);
-    Editor.addEditorItem([{ block_id: "block_terrain", type: "number", label: "texHeight", value: 384 }]);
-    Editor.addEditorItem([{ block_id: "block_terrain", type: "number", label: "noise", value: 64 }]);
-    Editor.addEditorItem([{ block_id: "block_terrain", type: "file", label: "Add Terrain", accept: ".png", onchangeEvent: Editor.addTerrain }]);
+    Editor.addEditorItem([{ block: "Decals", block_id: "block_decals" }]);
+    Editor.addEditorItem([
+        { block_id: "block_decals", type: "button", value: "+", onclick: "Editor.addDecal('dirt')" },
+        { block_id: "block_decals", type: "button", value: "-", onclick: "Editor.removeDecal('dirt')" }
+    ]);
 
 
-    Editor.addEditorItem([{ block: "Sprite", block_id: "block_sprite" }]);
-    Editor.addEditorItem([{ block_id: "block_sprite", type: "select", label: "Sprite type", list: ["static", "prop", "layer"] }]);
-    Editor.addEditorItem([{ block_id: "block_sprite", type: "select", label: "Texture wrap X", list: ["CLAMP", "REPEAT"] }]);
-    Editor.addEditorItem([{ block_id: "block_sprite", type: "select", label: "Texture wrap Y", list: ["CLAMP", "REPEAT"] }]);
-    Editor.addEditorItem([{ block_id: "block_sprite", type: "number", label: "zIndex", value: 1 }]);
-    Editor.addEditorItem([{ block_id: "block_sprite", type: "number", label: "Distance", value: 1 }]);
-    Editor.addEditorItem([{ block_id: "block_sprite", type: "file", label: "Add Sprite", accept: ".png", onchangeEvent: Editor.addSprite }]);
+
+
+    Editor.addEditorItem([{ block: "File", block_id: "block_file" }]);
+    Editor.addEditorItem([
+        { block_id: "block_file", type: "file", label: "Load", accept: ".json", onchangeEvent: Editor.loadMap },
+        { block_id: "block_file", type: "button", value: "Save", onclick: "Editor.saveMap()" }
+    ]);
+
 
     $("label.menuItem").click(function ()
     {

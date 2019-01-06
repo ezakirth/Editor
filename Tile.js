@@ -1,14 +1,14 @@
+"use strict";
 class Tile
 {
 
-    constructor(tex)
+    constructor()
     {
-        this.tex = tex;
-        this.solid = 0;
+        this.tex = null;
+        this.solid = true;
         this.pickup = null;
-        this.decals = {}
+        this.decals = [];
+        this.shadow = null;
         this.portal = null;
-        // only used in editor;
-        this.decal = null;
     }
 }

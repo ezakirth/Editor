@@ -3,28 +3,31 @@
 
 <head>
     <meta charset="UTF-8">
-    <link rel="stylesheet" type="text/css" href="css/reset.css">
-    <link rel="stylesheet" type="text/css" href="css/styles.css">
-    <script src="lib/jquery-3.3.1.min.js"></script>
-    <script src="Editor/Editor.js"></script>
-    <script src="Editor/Editor.init.js"></script>
-    <script src="Editor/Editor.addEditorItem.js"></script>
-    <script src="Editor/Editor.overlay.js"></script>
-    <script src="Editor/Editor.functions.js"></script>
-    <link rel="stylesheet" type="text/css" href="Editor/Editor.css">
+    <link rel="stylesheet" type="text/css" href="./css/reset.css">
+    <link rel="stylesheet" type="text/css" href="./css/styles.css">
+    <script src="./lib/jquery-3.3.1.min.js"></script>
+    <script src="./lib/Utils.js"></script>
+    <script src="./Editor/Editor.js"></script>
+    <script src="./Editor/Editor.init.js"></script>
+    <script src="./Editor/Editor.addEditorItem.js"></script>
+    <script src="./Editor/Editor.overlay.js"></script>
+    <script src="./Editor/Editor.functions.js"></script>
+    <link rel="stylesheet" type="text/css" href="./Editor/Editor.css">
 
-    <script src="Input.js"></script>
-    <script src="sprite.js"></script>
-    <script src="Map.js"></script>
-    <script src="Tile.js"></script>
-    <script src="main.js"></script>
+    <script src="./Input.js"></script>
+    <script src="./Map.js"></script>
+    <script src="./Tile.js"></script>
+    <script src="./main.js"></script>
+
+    <script src="./Graphics.js"></script>
+    <script src="./Game.js"></script>
 
 
 </head>
 
-<body onload="setup()">
+<body onload="init()">
 
-    <canvas id="canvas" width="1920" height="1080"></canvas>
+    <canvas id="canvas"></canvas>
 
     <!--canvas id="overlay"></canvas-->
 

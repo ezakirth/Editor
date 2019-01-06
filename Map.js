@@ -1,3 +1,4 @@
+"use strict";
 class Map
 {
     constructor(w, h)
@@ -7,26 +8,40 @@ class Map
 
         this.w = w;
         this.h = h;
-        this.maxW = w * 3;
-        this.maxH = h * 3;
-        this.size = Math.floor(1920 / w);
 
-        this.map = Array(this.maxW);
-        for (var x = 0; x < this.maxW; x++)
+        this.size = 96;
+
+        this.data = JSON.parse(localStorage.getItem('tileData'));
+        if (!this.data)
         {
-            this.map[x] = Array(this.maxH);
-            for (var y = 0; y < this.maxH; y++)
+            this.data = Array(this.w);
+            for (var x = 0; x < this.w; x++)
             {
-                let tile = '/assets/floor_1.png';
-                if (Math.random() > .8)
-                    tile = '/assets/floor_' + Math.floor(Math.random() * 6 + 1) + '.png';
-                this.map[x][y] = new Tile(tile);
+                this.data[x] = Array(this.h);
+                for (var y = 0; y < this.h; y++)
+                {
+                    this.data[x][y] = new Tile();
+                }
             }
         }
+        this.w = this.data.length;
+        this.h = this.data[0].length;
+
+        $("#editor_Width_id").val(this.w);
+        $("#editor_Height_id").val(this.h);
+    }
+
+    load(data)
+    {
+        this.data = data;
+        this.w = this.data.length;
+        this.h = this.data[0].length;
+        $("#editor_Width_id").val(this.w);
+        $("#editor_Height_id").val(this.h);
 
     }
 
-    draw()
+    render()
     {
         this.x = Input.viewPos.x / this.size;
         this.y = Input.viewPos.y / this.size;
@@ -39,25 +54,34 @@ class Map
         var px = 0;
         var py = 0;
 
-        ctx.save();
-        ctx.translate(this.size / 2 - fx, this.size / 2 - fy);
+        Graphics.pushMatrix();
+        Graphics.translate(this.size / 2 - fx, this.size / 2 - fy);
 
-        for (var x = ix; x < ix + this.w + 1; x++)
+        this.nb = 0;
+        let maxX = ix + Math.ceil(Graphics.width / this.size) + 1;
+        let maxY = iy + Math.ceil(Graphics.height / this.size) + 1;
+
+        for (var x = ix; x < maxX; x++)
         {
-            for (var y = iy; y < iy + this.h; y++)
+            for (var y = iy; y < maxY; y++)
             {
-                if (x < this.maxW && y < this.maxH && x >= 0 && y >= 0)
+                if (x < this.w && y < this.h && x >= 0 && y >= 0)
                 {
-                    var block = this.map[x][y];
+                    this.nb++;
+                    var block = this.data[x][y];
                     if (block.tex)
                     {
-                        sprite(block.tex, px, py, this.size, this.size);
+                        Graphics.sprite(block.tex, px, py, this.size, this.size);
+                    }
+                    if (block.shadow)
+                    {
+                        Graphics.sprite(block.shadow, px, py, this.size, this.size);
                     }
                     if (block.decals)
                     {
                         for (var i = 0; i < block.decals.length; i++)
                         {
-                            sprite(block.decals[i], px, py, this.size);
+                            Graphics.sprite(block.decals[i], px, py, this.size, this.size);
                         }
                     }
                     if (block.portal)
@@ -66,24 +90,24 @@ class Map
                         {
                             //                       tint(block.portal.r, block.portal.g, block.portal.b, 140);
                         }
-                        sprite("assets/portal", px, py, this.size);
+                        Graphics.sprite("assets/portal", px, py, this.size);
                         //                    tint(255);
                     }
                     if (block.pickup)
                     {
-                        sprite("assets/light", px, py, this.size);
-                        sprite(block.pickup, px, py, this.size);
+                        Graphics.sprite("assets/light", px, py, this.size);
+                        Graphics.sprite(block.pickup, px, py, this.size);
                     }
-                    //                    if (editor.showGrid)
+                    if (Editor.showGrid)
                     {
                         if (block.solid)
                         {
-                            //                   fill(255, 0, 0, 30);
+                            Graphics.fill(255, 0, 0, 30);
                         } else
                         {
-                            //                    fill(0, 255, 0, 30);
+                            Graphics.fill(0, 255, 0, 30);
                         }
-                        //               rect(px - this.size / 2, py - this.size / 2, this.size, this.size);
+                        Graphics.rect(px - this.size / 2, py - this.size / 2, this.size, this.size);
                     }
                 }
                 py = py + this.size;
@@ -92,7 +116,10 @@ class Map
             py = 0;
         }
 
-        ctx.restore();
+        Graphics.popMatrix();
 
     }
+
+
+
 }
