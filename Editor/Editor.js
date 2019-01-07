@@ -1,63 +1,64 @@
 var Editor = {
     active: true,
     elem: null,
-    selected: null,
-    resizing: false,
-    editMode: true,
-
     showGrid: true,
-    paintMode: true,
+    map: null,
 
-    onscreen: 0,
+    init: function ()
+    {
 
-    palette: {
-        canvas: null,
-        ctx: null,
+        this.map = new Map(20, 20);
+
+        this.menuSetup();
     },
-
 
     update: function ()
     {
-        if (Input.mouse.left)
+        if (Input.mouse.left && Input.real.x > 276)
         {
-            this.getpos();
+            let ix = Math.floor(this.map.x);
+            let fx = this.map.x - ix;
+            let iy = Math.floor(this.map.y);
+            let fy = this.map.y - iy;
+            let x = Math.floor(Input.pos.x / this.map.tileSize + fx);
+            let y = Math.floor(Input.pos.y / this.map.tileSize + fy);
+
+            let px = (x + ix).clamp(0, this.map.w - 1);
+            let py = (y + iy).clamp(0, this.map.h - 1);
+
+            let selected = $("#editor_Brush_type_id").val();
+
+            if (selected == "Smart Paint") this.paint(px, py);
+            if (selected == "Smart Clear") this.clear(px, py);
+            if (selected == "Add Spawn") this.addItem("spawn_" + $("#editor_Spawn_team_id").val(), px, py);
+            if (selected == "Add Weapons") this.addItem($("#editor_Weapon_id").val(), px, py);
+            if (selected == "Add Pickups") this.addItem($("#editor_Pickup_id").val(), px, py);
+            if (selected == "Add Portals") this.addItem($("#editor_Portal_id").val(), px, py);
+            if (selected == "Add Flag (CTF)") this.addItem("flag_" + $("#editor_Flag_team_id").val(), px, py);
+            if (selected == "Delete Items") this.clearItem(px, py);
         }
 
-        //        $("#block_sprite label:first").html("Sprites ("+Editor.onscreen+ " out of " + Game.world.objects.length + " visible)");
-        //       Editor.overlay.update();        
+        //       this.overlay.update();
     },
 
-    moveObject: function (x, y)
+    render: function ()
     {
-        var sprite = Editor.selected;
+        Graphics.clear();
 
-        if (Editor.editMode && sprite && !sprite.locked)
-        {
-            if (Editor.resizing)
-            {
-                var spriteCenterX = sprite.screenX + sprite.w / 2;
-                var spriteCenterY = sprite.screenY + sprite.h / 2;
+        Graphics.sprite("bg", Graphics.width / 2, Graphics.height / 2, Graphics.width, Graphics.height);
 
-                if (Input.pos.x > spriteCenterX)
-                    sprite.w -= (x / Game.world.speed) * 2;
-                else
-                    sprite.w += (x / Game.world.speed) * 2;
+        this.map.render();
 
-                if (Input.pos.y > spriteCenterY)
-                    sprite.h -= (y / Game.world.speed) * 2;
-                else
-                    sprite.h += (y / Game.world.speed) * 2;
+        Graphics.sprite("vignette", Graphics.width / 2, Graphics.height / 2, Graphics.width, Graphics.height);
 
-                if (sprite.w < 1) sprite.w = 1;
-                if (sprite.h < 1) sprite.h = 1;
-            }
-            else
-            {
-                sprite.x -= x / Game.world.speed;
-                sprite.y += y / Game.world.speed;
-            }
-        }
+
+    },
+
+    resetMap: function ()
+    {
+        let w = parseInt($("#editor_Width_id").val());
+        let h = parseInt($("#editor_Height_id").val());
+        Editor.map = new Map(w, h, true);
     }
+
 };
-
-

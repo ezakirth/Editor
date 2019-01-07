@@ -36,7 +36,7 @@ var Input = {
 
     wheelAction: function (e)
     {
-        Game.map.size += (e.deltaY / Math.abs(e.deltaY)) * 2;
+        Editor.map.tileSize += (e.deltaY / Math.abs(e.deltaY)) * 2;
     },
 
     rightClick: function (e)
@@ -87,7 +87,7 @@ var Input = {
         Input.last.y = Input.pos.y;
         if (Editor.active && e.button == 0)
         {
-            Editor.paintShadows();
+            Editor.calculateShadows();
         }
     },
 
@@ -103,7 +103,7 @@ var Input = {
         Input.origin.y = Input.pos.y;
         Input.getPosition(Input.pos, e);
         //        if (!Editor.active || Input.real.x > 276)
-        //           Game.touch(Input.pos.x, Game.height - Input.pos.y);
+        //           Editor.touch(Input.pos.x, Editor.height - Input.pos.y);
     },
 
     inputMove: function (e)
@@ -181,5 +181,3 @@ var Input = {
         point.y = (Input.real.y - Graphics.offset.y) * Graphics.ratio.y;
     },
 };
-
-

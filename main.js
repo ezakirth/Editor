@@ -5,7 +5,7 @@ function init()
     Graphics.init();
     Input.init();
 
-    Game.init();
+    Editor.init();
 
     loop();
 }
@@ -14,10 +14,10 @@ function loop()
 {
     // logic
     Input.update();
-    Game.update();
+    Editor.update();
 
     // graphics
-    Game.render();
+    Editor.render();
 
 
 

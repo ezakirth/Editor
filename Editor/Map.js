@@ -1,7 +1,7 @@
 "use strict";
 class Map
 {
-    constructor(w, h)
+    constructor(w, h, forceNew)
     {
         this.x = 0;
         this.y = 0;
@@ -9,10 +9,10 @@ class Map
         this.w = w;
         this.h = h;
 
-        this.size = 96;
+        this.tileSize = 96;
 
         this.data = JSON.parse(localStorage.getItem('tileData'));
-        if (!this.data)
+        if (!this.data || forceNew)
         {
             this.data = Array(this.w);
             for (var x = 0; x < this.w; x++)
@@ -43,23 +43,23 @@ class Map
 
     render()
     {
-        this.x = Input.viewPos.x / this.size;
-        this.y = Input.viewPos.y / this.size;
+        this.x = Input.viewPos.x / this.tileSize;
+        this.y = Input.viewPos.y / this.tileSize;
         var ix = Math.floor(this.x);
         var fx = this.x - ix;
-        var fx = fx * this.size;
+        var fx = fx * this.tileSize;
         var iy = Math.floor(this.y);
         var fy = this.y - iy;
-        var fy = fy * this.size;
+        var fy = fy * this.tileSize;
         var px = 0;
         var py = 0;
 
         Graphics.pushMatrix();
-        Graphics.translate(this.size / 2 - fx, this.size / 2 - fy);
+        Graphics.translate(this.tileSize / 2 - fx, this.tileSize / 2 - fy);
 
         this.nb = 0;
-        let maxX = ix + Math.ceil(Graphics.width / this.size) + 1;
-        let maxY = iy + Math.ceil(Graphics.height / this.size) + 1;
+        let maxX = ix + Math.ceil(Graphics.width / this.tileSize) + 1;
+        let maxY = iy + Math.ceil(Graphics.height / this.tileSize) + 1;
 
         for (var x = ix; x < maxX; x++)
         {
@@ -71,17 +71,17 @@ class Map
                     var block = this.data[x][y];
                     if (block.tex)
                     {
-                        Graphics.sprite(block.tex, px, py, this.size, this.size);
+                        Graphics.sprite(block.tex, px, py, this.tileSize, this.tileSize);
                     }
                     if (block.shadow)
                     {
-                        Graphics.sprite(block.shadow, px, py, this.size, this.size);
+                        Graphics.sprite(block.shadow, px, py, this.tileSize, this.tileSize);
                     }
                     if (block.decals)
                     {
                         for (var i = 0; i < block.decals.length; i++)
                         {
-                            Graphics.sprite(block.decals[i], px, py, this.size, this.size);
+                            Graphics.sprite(block.decals[i], px, py, this.tileSize, this.tileSize);
                         }
                     }
                     if (block.portal)
@@ -90,13 +90,13 @@ class Map
                         {
                             //                       tint(block.portal.r, block.portal.g, block.portal.b, 140);
                         }
-                        Graphics.sprite("assets/portal", px, py, this.size);
+                        Graphics.sprite("assets/portal", px, py, this.tileSize);
                         //                    tint(255);
                     }
                     if (block.pickup)
                     {
-                        Graphics.sprite("light", px, py, this.size, this.size);
-                        Graphics.sprite(block.pickup, px, py, this.size, this.size);
+                        Graphics.sprite("light", px, py, this.tileSize, this.tileSize);
+                        Graphics.sprite(block.pickup, px, py, this.tileSize, this.tileSize);
                     }
                     if (Editor.showGrid)
                     {
@@ -107,12 +107,12 @@ class Map
                         {
                             Graphics.fill(0, 255, 0, 30);
                         }
-                        Graphics.rect(px - this.size / 2, py - this.size / 2, this.size, this.size);
+                        Graphics.rect(px - this.tileSize / 2, py - this.tileSize / 2, this.tileSize, this.tileSize);
                     }
                 }
-                py = py + this.size;
+                py = py + this.tileSize;
             }
-            px = px + this.size;
+            px = px + this.tileSize;
             py = 0;
         }
 
