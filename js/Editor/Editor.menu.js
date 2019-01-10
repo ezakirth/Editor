@@ -5,7 +5,7 @@ Editor.menuSetup = function ()
     Editor.addEditorItem([{ block: "Terrain", block_id: "block_terrain" }]);
     Editor.addEditorItem([{ block_id: "block_terrain", type: "number", label: "Width", value: 10 }]);
     Editor.addEditorItem([{ block_id: "block_terrain", type: "number", label: "Height", value: 10 }]);
-    Editor.addEditorItem([{ block_id: "block_terrain", type: "button", value: "Create New", onclick: "Editor.resetMap()" }]);
+    Editor.addEditorItem([{ block_id: "block_terrain", type: "button", value: "Create New", onclick: "Editor.map.resetData()" }]);
 
 
 

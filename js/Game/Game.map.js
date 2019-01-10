@@ -1,47 +1,20 @@
 "use strict";
-class Map
-{
-    constructor(w, h, forceNew)
+Game.map = {
+
+    init: function ()
     {
         this.x = 0;
         this.y = 0;
 
-        this.w = w;
-        this.h = h;
-
-        this.tileSize = 96;
+        this.tileSize = 128;
 
         this.data = JSON.parse(localStorage.getItem('tileData'));
-        if (!this.data || forceNew)
-        {
-            this.data = Array(this.w);
-            for (var x = 0; x < this.w; x++)
-            {
-                this.data[x] = Array(this.h);
-                for (var y = 0; y < this.h; y++)
-                {
-                    this.data[x][y] = new Tile();
-                }
-            }
-        }
+
         this.w = this.data.length;
         this.h = this.data[0].length;
+    },
 
-        $("#editor_Width_id").val(this.w);
-        $("#editor_Height_id").val(this.h);
-    }
-
-    load(data)
-    {
-        this.data = data;
-        this.w = this.data.length;
-        this.h = this.data[0].length;
-        $("#editor_Width_id").val(this.w);
-        $("#editor_Height_id").val(this.h);
-
-    }
-
-    render()
+    render: function ()
     {
         this.x = Input.viewPos.x / this.tileSize;
         this.y = Input.viewPos.y / this.tileSize;
@@ -98,17 +71,7 @@ class Map
                         Graphics.sprite("light", px, py, this.tileSize, this.tileSize);
                         Graphics.sprite(block.pickup, px, py, this.tileSize, this.tileSize);
                     }
-                    if (Editor.showGrid)
-                    {
-                        if (block.solid)
-                        {
-                            Graphics.fill(255, 0, 0, 30);
-                        } else
-                        {
-                            Graphics.fill(0, 255, 0, 30);
-                        }
-                        Graphics.rect(px - this.tileSize / 2, py - this.tileSize / 2, this.tileSize, this.tileSize);
-                    }
+
                 }
                 py = py + this.tileSize;
             }
@@ -119,7 +82,5 @@ class Map
         Graphics.popMatrix();
 
     }
-
-
 
 }

@@ -1,16 +1,36 @@
 "use strict";
 
-function init()
+var Editor, Game;
+function init(editMode)
 {
-    Graphics.init();
+
     Input.init();
 
-    Editor.init();
+    if (editMode)
+    {
+        Graphics.width = 1920;
+        Graphics.height = 1080;
+        Graphics.init();
+        $(Graphics.canvas).css({ width: '100%' });
 
-    loop();
+        Editor.init();
+        loopEditor();
+    }
+    else
+    {
+        Graphics.width = 1920 / 2;
+        Graphics.height = 1080 / 2;
+        Graphics.init();
+        Graphics.offset.y = 0;
+        $('body').css({ display: 'block' });
+        $(Graphics.canvas).css({ width: '50%' });
+
+        Game.init();
+        loopGame();
+    }
 }
 
-function loop()
+function loopEditor()
 {
     // logic
     Input.update();
@@ -19,15 +39,20 @@ function loop()
     // graphics
     Editor.render();
 
-
-
-
-
-
-
-    requestAnimationFrame(loop);
+    requestAnimationFrame(loopEditor);
 }
 
+function loopGame()
+{
+    // logic
+    Input.update();
+    Game.update();
+
+    // graphics
+    Game.render();
+
+    requestAnimationFrame(loopGame);
+}
 
 
 

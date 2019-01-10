@@ -36,7 +36,7 @@ var Input = {
 
     wheelAction: function (e)
     {
-        Editor.map.tileSize += (e.deltaY / Math.abs(e.deltaY)) * 2;
+        if (Editor) Editor.map.tileSize += (e.deltaY / Math.abs(e.deltaY)) * 2;
     },
 
     rightClick: function (e)
@@ -85,7 +85,7 @@ var Input = {
 
         Input.last.x = Input.pos.x;
         Input.last.y = Input.pos.y;
-        if (Editor.active && e.button == 0)
+        if (Editor && e.button == 0)
         {
             Editor.calculateShadows();
         }
