@@ -1,6 +1,7 @@
 "use strict";
 
 var Editor, Game;
+var ElapsedTime = 3;
 function init(editMode)
 {
 
@@ -18,12 +19,12 @@ function init(editMode)
     }
     else
     {
-        Graphics.width = 1920 / 2;
-        Graphics.height = 1080 / 2;
+        Graphics.width = 1920;
+        Graphics.height = 1080;
         Graphics.init();
-        Graphics.offset.y = 0;
-        $('body').css({ display: 'block' });
-        $(Graphics.canvas).css({ width: '50%' });
+        //        Graphics.offset.y = 0;
+        //        $('body').css({ display: 'block' });
+        //        $(Graphics.canvas).css({ width: '50%' });
 
         Game.init();
         loopGame();

@@ -52,6 +52,27 @@ var Graphics = {
         }
     },
 
+    spriteSheet: function (img, sx, sy, sw, sh, dx, dy, dw, dh)
+    {
+        img = '/assets/' + img + '.png';
+        let image = Graphics.cachedImages[img];
+
+        if (!image)
+        {
+            Graphics.cachedImages[img] = new Image(256, 256);
+            image = Graphics.cachedImages[img];
+            image.src = img;
+            image.onload = function ()
+            {
+                Graphics.ctx.drawImage(this, sx, sy, sw, sh, dx - dw / 2, dy - dh / 2, dw, dh);
+            }
+        }
+        else
+        {
+            Graphics.ctx.drawImage(image, sx, sy, sw, sh, dx - dw / 2, dy - dh / 2, dw, dh);
+        }
+    },
+
     pushMatrix: function ()
     {
         this.ctx.save();
