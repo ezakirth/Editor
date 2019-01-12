@@ -13,14 +13,14 @@ var Editor = {
 
     update: function ()
     {
-        if (Input.mouse.left && Input.real.x > 276)
+        if (Editor.input.mouse.left && Editor.input.real.x > 276)
         {
             let ix = Math.floor(this.map.x);
             let fx = this.map.x - ix;
             let iy = Math.floor(this.map.y);
             let fy = this.map.y - iy;
-            let x = Math.floor(Input.pos.x / this.map.tileSize + fx);
-            let y = Math.floor(Input.pos.y / this.map.tileSize + fy);
+            let x = Math.floor(Editor.input.pos.x / this.map.tileSize + fx);
+            let y = Math.floor(Editor.input.pos.y / this.map.tileSize + fy);
 
             let px = (x + ix).clamp(0, this.map.w - 1);
             let py = (y + iy).clamp(0, this.map.h - 1);

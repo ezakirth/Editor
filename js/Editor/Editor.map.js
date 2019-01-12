@@ -43,8 +43,8 @@ Editor.map = {
 
     render: function ()
     {
-        this.x = Input.viewPos.x / this.tileSize;
-        this.y = Input.viewPos.y / this.tileSize;
+        this.x = Editor.input.viewPos.x / this.tileSize;
+        this.y = Editor.input.viewPos.y / this.tileSize;
         var ix = Math.floor(this.x);
         var fx = this.x - ix;
         var fx = fx * this.tileSize;

@@ -1,19 +1,24 @@
 "use strict";
 
+var KEY_LEFT = 37;
+var KEY_RIGHT = 39;
+var KEY_UP = 38;
+var KEY_DOWN = 40;
+var KEY_Q = 81;
+var KEY_D = 68;
+var KEY_Z = 90;
+var KEY_S = 83;
+
+
 var Input = {
-    active: false,
-    last: { x: 0, y: 0 },
-    origin: { x: 0, y: 0 },
-    pos: { x: 0, y: 0 },
-    real: { x: 0, y: 0 },
-    delta: 0,
-    inertia: { x: 0, y: 0 },
-    keyLeft: false,
-    keyRight: false,
-    keyUp: false,
-    keyDown: false,
-    viewPos: { x: 0, y: 0 },
-    speed: 1,
+    origin: new Vector(),
+    pos: new Vector(),
+    real: new Vector(),
+    delta: new Vector(),
+    key: Array(256),
+
+    viewPos: new Vector(),
+    speed: 10,
     mouse: { left: false, middle: false, right: false },
 
     init: function ()
@@ -45,37 +50,6 @@ var Input = {
         return false;
     },
 
-    update: function ()
-    {
-
-        if (Input.keyLeft)
-        {
-            Input.inertia.x += Input.speed;
-            Input.viewPos.x -= Input.speed;
-        }
-        if (Input.keyRight)
-        {
-            Input.inertia.x -= Input.speed;
-            Input.viewPos.x += Input.speed;
-        }
-
-        if (Input.keyUp)
-        {
-            Input.inertia.y += Input.speed;
-            Input.viewPos.y -= Input.speed;
-        }
-        if (Input.keyDown)
-        {
-            Input.inertia.y -= Input.speed;
-            Input.viewPos.y += Input.speed;
-        }
-        Input.viewPos.y -= Input.inertia.y * Input.speed;
-        Input.inertia.y -= (Input.inertia.y / 20) * Input.speed;
-
-        Input.viewPos.x -= Input.inertia.x * Input.speed;
-        Input.inertia.x -= (Input.inertia.x / 20) * Input.speed;
-
-    },
 
     inputUp: function (e)
     {
@@ -83,8 +57,8 @@ var Input = {
         if (e.button == 1) Input.mouse.middle = false;
         if (e.button == 2) Input.mouse.right = false;
 
-        Input.last.x = Input.pos.x;
-        Input.last.y = Input.pos.y;
+        Input.origin.x = Input.pos.x;
+        Input.origin.y = Input.pos.y;
         if (Editor && e.button == 0)
         {
             Editor.calculateShadows();
@@ -97,71 +71,35 @@ var Input = {
         Input.mouse.middle = (e.button == 1);
         Input.mouse.right = (e.button == 2);
 
-        Input.last.x = Input.pos.x;
-        Input.last.y = Input.pos.y;
         Input.origin.x = Input.pos.x;
         Input.origin.y = Input.pos.y;
         Input.getPosition(Input.pos, e);
-        //        if (!Editor.active || Input.real.x > 276)
-        //           Editor.touch(Input.pos.x, Editor.height - Input.pos.y);
     },
 
     inputMove: function (e)
     {
-        Input.last.x = Input.pos.x;
-        Input.last.y = Input.pos.y;
+        Input.origin.x = Input.pos.x;
+        Input.origin.y = Input.pos.y;
         Input.getPosition(Input.pos, e);
 
         if (Input.mouse.right)
         {
-            var deltaX = -(Input.last.x - Input.pos.x) * Input.speed;
-            var deltaY = -(Input.last.y - Input.pos.y) * Input.speed;
+            Input.delta.x = -(Input.origin.x - Input.pos.x) * Input.speed;
+            Input.delta.y = -(Input.origin.y - Input.pos.y) * Input.speed;
 
-            Input.viewPos.x -= deltaX;
-            Input.viewPos.y -= deltaY;
-            Input.inertia.x = deltaX;
-            Input.inertia.y = deltaY;
+            Input.viewPos.x -= Input.delta.x;
+            Input.viewPos.y -= Input.delta.y;
         }
     },
 
     inputKeyDown: function (e)
     {
-        if (e.keyCode == 37)
-        { // left
-            Input.keyLeft = true;
-        }
-        if (e.keyCode == 39)
-        { // right
-            Input.keyRight = true;
-        }
-        if (e.keyCode == 38)
-        { // up
-            Input.keyUp = true;
-        }
-        if (e.keyCode == 40)
-        { // down
-            Input.keyDown = true;
-        }
+        Input.key[e.keyCode] = true;
     },
 
     inputKeyUp: function (e)
     {
-        if (e.keyCode == 37)
-        { // left
-            Input.keyLeft = false;
-        }
-        if (e.keyCode == 39)
-        { // right
-            Input.keyRight = false;
-        }
-        if (e.keyCode == 38)
-        { // up
-            Input.keyUp = false;
-        }
-        if (e.keyCode == 40)
-        { // down
-            Input.keyDown = false;
-        }
+        Input.key[e.keyCode] = false;
     },
 
     getPosition: function (point, event)

@@ -10,8 +10,7 @@ Editor.addItem = function (type, px, py)
     }
 
     tile.pickup = "pickup_" + type;
-    console.log(tile.pickup);
-    Input.mouse.left = false;
+    Editor.input.mouse.left = false;
 }
 
 Editor.clearItem = function (px, py)
@@ -24,6 +23,5 @@ Editor.clearItem = function (px, py)
     }
 
     tile.pickup = null;
-
-    Input.mouse.left = false;
+    Editor.input.mouse.left = false;
 }

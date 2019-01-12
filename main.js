@@ -1,32 +1,21 @@
 "use strict";
 
+var solo = false;
 var Editor, Game;
-var ElapsedTime = 3;
 function init(editMode)
 {
-
-    Input.init();
+    Graphics.init();
 
     if (editMode)
     {
-        Graphics.width = 1920;
-        Graphics.height = 1080;
-        Graphics.init();
-        $(Graphics.canvas).css({ width: '100%' });
-
         Editor.init();
+        Editor.input.init();
         loopEditor();
     }
     else
     {
-        Graphics.width = 1920;
-        Graphics.height = 1080;
-        Graphics.init();
-        //        Graphics.offset.y = 0;
-        //        $('body').css({ display: 'block' });
-        //        $(Graphics.canvas).css({ width: '50%' });
-
         Game.init();
+        Game.input.init();
         loopGame();
     }
 }
@@ -34,7 +23,7 @@ function init(editMode)
 function loopEditor()
 {
     // logic
-    Input.update();
+    Editor.input.update();
     Editor.update();
 
     // graphics
@@ -46,7 +35,6 @@ function loopEditor()
 function loopGame()
 {
     // logic
-    Input.update();
     Game.update();
 
     // graphics
