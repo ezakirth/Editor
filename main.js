@@ -1,27 +1,23 @@
 "use strict";
 
-var solo = false;
+var solo = true;
 var Editor, Game;
-function init(editMode)
-{
+function init(editMode) {
     Graphics.init();
 
-    if (editMode)
-    {
+    if (editMode) {
         Editor.init();
         Editor.input.init();
         loopEditor();
     }
-    else
-    {
+    else {
         Game.init();
         Game.input.init();
         loopGame();
     }
 }
 
-function loopEditor()
-{
+function loopEditor() {
     // logic
     Editor.input.update();
     Editor.update();
@@ -32,8 +28,7 @@ function loopEditor()
     requestAnimationFrame(loopEditor);
 }
 
-function loopGame()
-{
+function loopGame() {
     // logic
     Game.update();
 
@@ -46,15 +41,12 @@ function loopGame()
 
 
 
-(function ()
-{
+(function () {
     var script = document.createElement('script');
-    script.onload = function ()
-    {
+    script.onload = function () {
         var stats = new Stats();
         document.body.appendChild(stats.dom);
-        requestAnimationFrame(function loop()
-        {
+        requestAnimationFrame(function loop() {
             stats.update();
             requestAnimationFrame(loop)
         });
